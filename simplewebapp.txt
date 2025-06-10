@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Simple Django API Frontend</title>
+  <title>Simple Django API FrontStart</title>
 </head>
 <body>
   <h1>Items</h1>
