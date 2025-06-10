@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Django API Frontend</title>
+</head>
+<body>
+  <h1>Items</h1>
+  <div id="items"></div>
+
+  <h2>Add New Item</h2>
+  <input type="text" id="name" placeholder="Item name">
+  <input type="text" id="description" placeholder="Description">
+  <button onclick="createItem()">Add Item</button>
+
+  <script>
+    // 🔐 Replace this with your actual access token from /api/token/
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5NDc3NjM2LCJpYXQiOjE3NDk0NzczMzYsImp0aSI6IjgzMzQ4NmI4NTQ0ZjRlNGFhMmE3NGVhNzdjZWMwNjY3IiwidXNlcl9pZCI6MX0.fUXSoRI2hKGNqsLHKFErT3O1zYjryoIecH8WNesFi9I";
+
+    // 🔍 Fetch and show items
+    function loadItems() {
+      fetch("http://127.0.0.1:8000/api/items/", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById("items");
+        container.innerHTML = "";
+        data.forEach(item => {
+          container.innerHTML += `<p><strong>${item.name}</strong>: ${item.description}</p>`;
+        });
+      })
+      .catch(err => console.error("Error loading items:", err));
+    }
+
+    // ➕ Create a new item
+    function createItem() {
+      const name = document.getElementById("name").value;
+      const description = document.getElementById("description").value;
+
+      fetch("http://127.0.0.1:8000/api/items/", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name, description })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to create item");
+        return res.json();
+      })
+      .then(() => {
+        alert("Item created!");
+        loadItems();
+      })
+      .catch(err => alert("Error: " + err.message));
+    }
+
+    // 🚀 Load items on page load
+    loadItems();
+  </script>
+</body>
+</html>
